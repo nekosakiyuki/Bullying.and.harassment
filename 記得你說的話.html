@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>留言評論與賭局邏輯分析｜留言整理</title>
+  <meta name="description" content="留言評論、賭局邏輯分析、證據比對與逐句解析">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,500,700&display=swap">
+  <style>
+    :root {
+      --main-blue: #3173b1;
+      --light-blue: #e3f2fd;
+      --accent-blue: #4fc3f7;
+      --card-radius: 15px;
+      --shadow: 0 2px 16px #b8d1ff30;
+      --text-black: #22334d;
+      --gray-light: #fafdff;
+      --danger-red: #ef5350;
+      --info-green: #43a047;
+      --warn-yellow: #ffd54f;
+    }
+    html {
+      scroll-behavior: smooth;
+      background: #f5f7fa;
+    }
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: var(--text-black);
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: #f5f7fa;
+      animation: pageFadeIn 0.7s;
+    }
+    @keyframes pageFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .container {
+      max-width: 880px;
+      margin: 32px auto 60px auto;
+      padding: 0 14px;
+    }
+    /* Block/卡片區 */
+    .block {
+      background: linear-gradient(102deg, #f2f7fd 80%, #eaf1fb 100%);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      border: 1.5px solid #b7d5f5;
+      padding: 32px 32px 22px 32px;
+      margin-bottom: 38px;
+      position: relative;
+      transition: box-shadow 0.18s;
+    }
+    .block:hover {
+      box-shadow: 0 6px 32px #61a0ec44;
+    }
+    .block-title {
+      font-size: 1.23em;
+      font-weight: bold;
+      color: var(--main-blue);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      letter-spacing: 1.2px;
+      gap: 8px;
+    }
+    .icon {
+      font-size: 1.5em;
+      margin-right: 8px;
+      filter: drop-shadow(0 1px 1px #b8d1ff33);
+      transition: filter 0.18s, transform 0.18s;
+    }
+    .icon:hover { filter: brightness(1.3); transform: scale(1.14); }
+
+    /* 條列區 */
+    .block-list {
+      list-style: disc inside;
+      padding: 0;
+      margin: 0 0 0 12px;
+    }
+    .block-list li {
+      background: #fff;
+      border-radius: 11px;
+      margin-bottom: 14px;
+      padding: 14px 19px 13px 19px;
+      color: var(--text-black);
+      font-size: 1.08em;
+      box-shadow: 0 1px 5px #d6e9ff44;
+      border-left: 5px solid var(--accent-blue);
+      transition: background 0.14s;
+      line-height: 1.85;
+      letter-spacing: 0.01em;
+      animation: fadeInUp 0.45s;
+    }
+    .block-list li strong {
+      color: var(--main-blue);
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .block-list li:last-child {
+      margin-bottom: 0;
+    }
+    /* 氣泡區 */
+    .bubble-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin: 20px 0 10px 0;
+      max-width: 650px;
+    }
+    .bubble-label {
+      font-size: 1.01em;
+      color: #5aa3e2;
+      margin-bottom: 6px;
+      margin-left: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .bubble-msg {
+      background: linear-gradient(110deg, #eef7ff 80%, #d1eafc 100%);
+      color: #234060;
+      padding: 14px 18px;
+      border-radius: 17px 17px 17px 7px;
+      font-size: 1.06em;
+      box-shadow: 0 2px 8px #b8d1ff25;
+      max-width: 100%;
+      word-break: break-all;
+      line-height: 1.8;
+      letter-spacing: 0.03em;
+      border: 1.2px solid #b5d5f6;
+      margin-bottom: 10px;
+    }
+
+    /* 證據按鈕 */
+    .evidence-link {
+      display: inline-block;
+      padding: 8px 24px;
+      background: linear-gradient(90deg, var(--accent-blue) 70%, var(--main-blue) 100%);
+      color: #fff !important;
+      border-radius: 999px;
+      font-weight: bold;
+      font-size: 1.08em;
+      box-shadow: 0 2px 8px #b8d1ff33;
+      text-decoration: none;
+      letter-spacing: 0.6px;
+      border: none;
+      transition: background 0.17s, box-shadow 0.17s, transform 0.13s;
+      margin: 14px 0 7px 0;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .evidence-link:hover,
+    .evidence-link:focus {
+      background: linear-gradient(90deg, #357ad7 60%, #285a91 100%);
+      box-shadow: 0 4px 16px #4fa3f744;
+      transform: translateY(-2px) scale(1.03);
+      text-decoration: underline;
+    }
+    .evidence-caption {
+      font-size: 0.94em;
+      color: #999;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* 分析區塊 */
+    .analysis-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 0;
+    }
+    .analysis-block {
+      display: flex;
+      align-items: flex-start;
+      padding: 13px 18px 13px 15px;
+      background: #f2f7ff;
+      border-left: 4px solid #448aff;
+      border-radius: 9px;
+      margin-bottom: 0;
+      gap: 13px;
+      box-shadow: 0 1px 7px #ddeeff22;
+      position: relative;
+      transition: box-shadow 0.14s;
+    }
+    .analysis-block + .analysis-block {
+      border-top: 1px solid #e4ecf8;
+      margin-top: 8px;
+    }
+    .analysis-icon {
+      font-size: 1.23em;
+      margin-right: 8px;
+      margin-top: 2.5px;
+      color: #4285f4;
+      flex-shrink: 0;
+      transition: filter 0.16s, transform 0.16s;
+    }
+    .analysis-content { flex: 1; }
+    .analysis-original {
+      color: #2857a5;
+      font-weight: 500;
+      margin-bottom: 2px;
+      letter-spacing: 0.1px;
+    }
+    .analysis-reason {
+      color: #232323;
+      background: #fafdff;
+      border-left: 2.5px solid #b3ddff;
+      border-radius: 0 7px 7px 0;
+      padding: 7px 13px 7px 13px;
+      margin-top: 3px;
+      font-size: 1em;
+      line-height: 1.7;
+    }
+    .analysis-note {
+      margin-top: 7px;
+      background: #eaf4ff;
+      border-left: 4px solid #4fc3f7;
+      border-radius: 0 7px 7px 0;
+      padding: 8px 12px 8px 14px;
+      display: block;
+      color: #255081;
+      font-size: 0.98em;
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+    .analysis-note ul {
+      margin: 0 0 0 14px;
+      padding: 0;
+      list-style: disc inside;
+    }
+    /* 證據小卡圖片區 */
+    .evidence-card-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 35px 0 18px 0;
+      flex-wrap: wrap;
+    }
+    .evidence-card-mini {
+  background: var(--gray-light);
+  border-radius: 13px;
+  box-shadow: 0 3px 16px 0 #b8d1ff2a;
+  border: 1.5px solid #d5eaff;
+  padding: 12px 10px 14px 10px;
+  width: 44vw;
+  min-width: 140px;
+  max-width: 240px;
+  text-align: center;
+  position: relative;
+  transition: box-shadow 0.18s, transform 0.14s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+    .evidence-card-mini:hover {
+      box-shadow: 0 8px 32px #7bb6ff44;
+      transform: translateY(-3px) scale(1.025);
+      z-index: 2;
+    }
+.evidence-title-mini {
+  background: linear-gradient(90deg,#4fc3f7 70%,#e3f0ff 100%);
+  color: #166db2;
+  font-weight: bold;
+  font-size: clamp(0.93em, 3vw, 1.13em);
+  letter-spacing: 0.5px;
+  border-radius: 6px 6px 0 0;
+  padding: 6px 2px 6px 2px;
+  margin-bottom: 8px;
+  box-shadow: 0 1.5px 5px #d0eafd22;
+  min-height: 2.3em;
+  line-height: 1.25;
+  word-break: break-all;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+    .evidence-card-mini img {
+      width: 140px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 7px;
+      border: 1px solid #b9d6fb;
+      box-shadow: 0 1.5px 7px #b3d2ff33;
+      transition: transform 0.17s, box-shadow 0.16s;
+      cursor: pointer;
+      background: #fff;
+    }
+    .evidence-card-mini img:hover {
+      transform: scale(1.10) rotate(-1.5deg);
+      box-shadow: 0 4px 22px #a5caf744;
+      z-index: 2;
+    }
+    .img-caption-mini {
+      color: #4171b1;
+      font-size: 0.98em;
+      margin-top: 7px;
+      margin-bottom: 0;
+    }
+
+  @media (max-width: 700px) {
+  .evidence-card-mini { width: 96vw; max-width: none; }
+  .evidence-card-mini img { width: 91vw; }
+  .evidence-title-mini { font-size: clamp(0.95em, 4vw, 1.05em);}
+}
+
+    /* Modal/放大圖 */
+    .img-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(32,50,89,0.92);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.15s;
+    }
+    .img-modal.active { display: flex; }
+    .img-modal-content {
+      position: relative;
+      max-width: 94vw;
+      max-height: 85vh;
+      animation: popUp 0.22s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .img-modal-content img {
+      border-radius: 13px;
+      box-shadow: 0 10px 50px #222c4b99;
+      background: #fff;
+      max-width: 94vw;
+      max-height: 73vh;
+      display: block;
+    }
+    .img-modal-close {
+      position: absolute;
+      top: -34px;
+      right: -11px;
+      background: #fff;
+      color: #2257af;
+      border: none;
+      font-size: 2.3em;
+      font-weight: bold;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 1.5px 5px #b3d2ff55;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .img-modal-close:hover {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+    .img-modal-arrows {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .img-modal-arrow {
+      background: #fff;
+      color: var(--main-blue);
+      font-size: 2em;
+      border: none;
+      border-radius: 50%;
+      width: 42px; height: 42px;
+      box-shadow: 0 2px 10px #b3d2ff55;
+      cursor: pointer;
+      margin: 0 18px;
+      transition: background 0.17s, color 0.17s;
+    }
+    .img-modal-arrow:hover {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+    @keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
+    @keyframes popUp { from { transform: scale(0.85);} to { transform: scale(1);} }
+
+
+    /* 回到頂部按鈕 */
+    #backToTop {
+      position: fixed;
+      right: 24px;
+      bottom: 34px;
+      background: var(--main-blue);
+      color: #fff;
+      font-size: 1.5em;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      box-shadow: 0 2px 16px #3173b177;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.18s;
+    }
+    #backToTop:hover {
+      background: var(--accent-blue);
+      box-shadow: 0 5px 24px #4fc3f777;
+      transform: scale(1.11);
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 900px) {
+      .container { max-width: 99vw;}
+      .block, .overall-block { padding: 18px 3vw 16px 3vw; }
+    }
+    @media (max-width: 700px) {
+      body { font-size: 17px; }
+      .block, .overall-block { font-size: 1.01em; }
+      .block-title { font-size: 1.08em;}
+      .block-list li { font-size: 0.99em; padding: 11px 2vw 11px 3vw;}
+      .bubble-wrap { max-width: 99vw; }
+      .bubble-msg { padding: 12px 4vw; font-size: 1em;}
+      .evidence-card-row { flex-direction: column; gap: 15px;}
+      .evidence-card-mini { width: 98vw; }
+      .evidence-card-mini img { width: 90vw; height: 23vw; min-height: 60px;}
+      .img-modal-content img { max-width: 97vw; }
+      #backToTop { right: 10px; bottom: 18px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 聲明與立場 -->
+    <div class="block">
+      <div class="block-title">
+        <span class="icon">📝</span> 聲明與立場
+      </div>
+      <ul class="block-list">
+        <li>賭局是我先公開寫好的（等於是一種立場聲明），你既沒有接受賭局，反而在自己的留言板繼續寫長篇指控（帶霸凌、情緒化）。這代表什麼？</li>
+        <li><strong>拒絕賭局 = 缺乏自信。</strong> 你若真的站得住腳，照理會接受「結果出來看誰打臉」條件，但你選擇閃避。</li>
+        <li><strong>持續攻擊 = 留下更多紀錄。</strong> 你自己說「不會停止反擊」，這種言論本身就是持續騷擾的自白，對我反而有利。</li>
+        <li>一方面說「妳起頭」，一方面卻持續留言，等於自己承認沒有停止。</li>
+        <li>一方面說「賭沒好處」，卻忽略了你之前不斷糾纏，就是在自打臉。</li>
+        <li>把「司法進度拖延」當作「妳沒證據或證據不足」，是邏輯錯誤。</li>
+      </ul>
+      <div class="bubble-wrap">
+        <div class="bubble-label">我的聲明</div>
+        <div class="bubble-msg">我不需要跟著你在留言板上對吵，你的發言越來越情緒化，對我反而是證據，保留紀錄即可。</div>
+        <div class="bubble-msg">關於賭局，你已經拒絕參與。你說過「不會浪費資源」這句話，我都有備份紀錄。等案件結束，如果結果對你不利，希望你能遵守承諾。</div>
+        <div class="bubble-msg">賭局這件事我不再討論；你今天的留言我也已經留存備份。</div>
+        <div class="bubble-msg">未來若有任何騷擾或不實指控，我只會依法處理。</div>
+        <div class="bubble-msg">「不浪費資源」這句話是你自己講的，結果出來時也希望你不要再反悔。你要反告也沒意義，畢竟這是你自己說的。</div>
+        <div class="bubble-msg">我這邊會根據正式紀錄處理，也僅保存律師認為必要的留言截圖。</div>
+      </div>
+    </div>
+
+    <!-- 拒絕賭局多角度分析區 -->
+    <div class="block">
+      <div class="block-title"><span class="icon">🎲</span> 拒絕賭局多角度邏輯</div>
+      <ul class="block-list">
+        <li>拒絕賭局通常代表不願意為自己的言論或主張承擔，顯示對自身立場沒有信心，或害怕結果證明自己錯誤。若你堅信自己正確，應該不會畏懼「賭局」這種自我驗證的方式。</li>
+        <li>拒絕賭局，反映出對結果的不確定與擔憂。一邊堅稱自己有理，卻又不願賭局來證明，這種「只敢空口說白話，不敢實際負責」的態度會削弱自身說服力。</li>
+        <li>如果你真有信心，賭局是澄清自身立場、反擊對方質疑的最佳機會。拒絕反而會被認為心虛，甚至被外人解讀為「說不過就閃躲」。</li>
+        <li><span style="color:#4c7ccf;">「拒絕賭局」不僅顯得無自信，也錯失了自證的機會。</span></li>
+      </ul>
+      <a href="https://nekosakiyuki.github.io/Reject.the.gambling.game/%E8%B3%AD%E5%B1%80.html" class="evidence-link" target="_blank">
+        <span style="margin-right:5px">🔗</span>拒絕賭局的留言連結
+      </a>
+      <span class="evidence-caption">(點擊查看賭局內容)</span>
+    </div>
+
+    <!-- 留言逐句對照區 -->
+    <div class="block">
+      <div class="block-title"><span class="icon">💬</span> 留言逐句對照回應</div>
+      <div class="analysis-list">
+        <div class="analysis-block">
+          <span class="analysis-icon">📷</span>
+          <div class="analysis-content">
+            <div class="analysis-original">妳留言版怎麼刪都沒用都已經有存圖</div>
+            <div class="analysis-reason">存圖 ≠ 證據。截圖只是單方的紀錄，任何人都可以針對留言進行截圖備份。但截圖是否具備法律上的證據效力，還需要看內容本身、取得方式，以及是否能經第三方驗證。<br>
+            <span style="color:#4c7ccf;">截圖可作為參考，但是否能作為正式證據，仍需由司法機關依事實與程序判定。</span></div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">❓</span>
+          <div class="analysis-content">
+            <div class="analysis-original">妳自己先改才反擊的不要刪掉當沒事 一直都是妳先起頭 講的好像我先一樣?</div>
+            <div class="analysis-reason">
+              <ul>
+                <li><b>關於「刪掉當沒事」：</b>我在刪除前已經完整錄影及截圖留存，並非想掩蓋或否認任何事情。</li>
+                <li><b>關於「誰先起頭」：</b>你所說的「一直都是我先起頭」，屬於個人主觀認定，並未提出具體事證（哪句、哪一天發生）。</li>
+                <li><b>關於「講的好像我先一樣」：</b>實際的發言時間與內容都有紀錄可查，並非單靠誰說就能定調。以目前我這邊掌握的截圖與時間線，最早相關紀錄可追溯至2023年底。</li>
+              </ul>
+              <span style="color:#4c7ccf;">如果要釐清細節，歡迎對照具體截圖和時間，避免單靠主觀描述產生誤解。</span>
+            </div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">🛠️</span>
+          <div class="analysis-content">
+            <div class="analysis-original">建議內容 可以在修正妳是不是以為我不會看內容阿?</div>
+            <div class="analysis-reason">如果你有建議或認為哪裡需要修正，直接指出具體內容，而不是只是做出臆測性的評論。若僅說「是不是以為我不會看內容」，這樣的講法比較偏向主觀猜測。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">🎲</span>
+          <div class="analysis-content">
+            <div class="analysis-original">單方面有利賭個P對我又沒好處 賭贏也得不到啥</div>
+            <div class="analysis-reason">你曾經表示現實法律、警察不會理會我，因此我提出賭局作為解決方式。但現在卻以「沒好處」為由拒絕，這樣的立場前後不一致，也顯示不承擔原本的承諾態度。某種程度上也反映出對賭局內容缺乏信心。以上僅就行為本身做客觀說明，並無其他指涉。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">👮</span>
+          <div class="analysis-content">
+            <div class="analysis-original">網址看了是誰沒信妳有報案 問題是要成功</div>
+            <div class="analysis-reason">「問題是要成功」這句不通順，如果你的意思是「告成才算數」那我只能說報案本來就是依照法律程序進行，是否成立由司法機關判斷，沒有人能事先預設或保證結果。不論你我，雙方都一樣沒有決定權。即使律師認為有成立的機會，結果也不可能百分之百確定，一切都要以最終司法認定為準。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">⏰</span>
+          <div class="analysis-content">
+            <div class="analysis-original">從去年等到現在 會拖這么不就是有問題嗎 證據不足之類的</div>
+            <div class="analysis-reason">司法程序本來可能冗長，拖延未必是證據不足，排程、案件多、行政流程等原因。「證據不足」是你自己推測，未經司法單位正式認定，屬臆測。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">💬</span>
+          <div class="analysis-content">
+            <div class="analysis-original">還有留言版有上限遊戲黑單還要談?也真沒啥好談</div>
+            <div class="analysis-reason">有關「留言版有上限」這只是平台本身的設計限制，與本案事實無關，因此並不能作為拒絕賭局的理由。至於「遊戲黑單還要談？」這部分，我從未表示想要談，只是在回應你那些不實言論而已，這並不會影響賭局的事實與相關證據。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">🗯️</span>
+          <div class="analysis-content">
+            <div class="analysis-original">妳不停止對我的攻擊我也不打算停止反擊</div>
+            <div class="analysis-note">
+              <ul>
+                <li>針對「攻擊」與「反擊」這部分，我一直是被動回應，並沒有主動針對誰。根據我目前的截圖資料歷史紀錄，早期就有涉及關於我的討論內容，這些資訊都是可以查證。</li>
+                <li>起源排行榜事件中，短髮等人帶人行動是他們自行決定，我只是順便用小號領取獎勵，「床腳」也曾做過相關說明。至於你當時是如何向別人說明這件事，我相信你自己心裡也很清楚。我這邊僅就我所知道的情況進行說明。</li>
+                <li>關於粉絲專頁，在2013年一年內累積超過1.2萬讚。後來退出業界，將原本的粉絲專頁與空白專頁合併後持續放置，與「買粉絲」無關。現今FB粉絲專頁觸及率極低，以此時點再指控「買粉絲」，其實並不合邏輯。</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">🎮</span>
+          <div class="analysis-content">
+            <div class="analysis-original">說要退坑 退一年了 妳小號好幾隻 也玩的蠻認真 嘴上不要 身體很誠實</div>
+            <div class="analysis-reason">他在質疑你「說退坑卻繼續玩」，想要塑造成你「言行不一」。</div>
+            <div class="analysis-note">
+              <ul>
+                <li>關於你提到「退坑卻還在玩、也玩的蠻認真」這些內容，我在這裡再講一次，我現在只有做做每日、周任、打王箱就下線，之後主要都在忙直播，遊戲只是隨便玩玩，這樣也能被說成認真玩，算你厲害，謝謝誇獎！</li>
+                <li>至於小號，已經很久沒動過，隨便開一隻也都是回歸號，帳號狀態很明顯。請不要再誤導或曲解他人想法。</li>
+                <li>「嘴上不要、身體很誠實」這種說法只是你的主觀想像，與事實不符。退坑與否是私人選擇，與案件無關。把「遊戲行為」當成人品證據，邏輯不成立。</li>
+                <li>針對比排名這件事，每個人遊戲資源和進度不同，本來就不能直接比較。若真要討論排名或實力，應該以相近條件下來看，單以排名或資源做比較，未必能反映真正的實力。</li>
+              </ul>
+            </div>
+            <div class="bubble-wrap">
+              <div class="bubble-msg">坦白說我不太理解你常常拿成就或排名來跟我比較，有什麼特別的意義？</div>
+              <div class="bubble-msg">以目前資源條件來說，像是沒有胡蘿貝、烈空6+0、原器停留在較早版本的，跟資源較充足每個月課金的帳號相比，根本不太適合直接用排名做比較。</div>
+              <div class="bubble-msg">例如有些課佬或近期回坑的玩家，資源、遊戲進度不同，與其他玩家在排名上出現差距也很正常。</div>
+              <div class="bubble-msg">如果要論實力或進度，建議還是以相近條件來看會比較公平。不然這樣比較下來，真的會讓人有種「是不是只挑比較弱的來針對」的感覺。</div>
+            </div>
+          </div>
+        </div>
+        <div class="evidence-card-row" id="evidenceRank">
+          <div class="evidence-card-mini" tabindex="0" aria-label="原器停留 證據圖">
+            <div class="evidence-title-mini">原器停留</div>
+            <img src="https://i.ibb.co/ymHZPmtn/1.png" alt="原器停留" onclick="showModal(this, 0, 'evidenceRank')">
+            <div class="img-caption-mini">原器停留</div>
+          </div>
+          <div class="evidence-card-mini" tabindex="0" aria-label="烈空6+0 證據圖">
+            <div class="evidence-title-mini">烈空6+0</div>
+            <img src="https://i.ibb.co/tpjzQYhw/2025-09-10-231521.png" alt="烈空6+0" onclick="showModal(this, 1, 'evidenceRank')">
+            <div class="img-caption-mini">烈空6+0</div>
+          </div>
+          <div class="evidence-card-mini" tabindex="0" aria-label="小號／老頭號 證據圖">
+            <div class="evidence-title-mini">小號／老頭號</div>
+            <img src="https://i.ibb.co/tMKbcKkX/2.png" alt="小號／老頭號" onclick="showModal(this, 2, 'evidenceRank')">
+            <div class="img-caption-mini">小號／老頭號</div>
+          </div>
+          <div class="evidence-card-mini" tabindex="0" aria-label="小號／老頭號 證據圖">
+            <div class="evidence-title-mini">小號／老頭號</div>
+            <img src="https://i.ibb.co/YFNyG5JB/3.png" alt="小號／老頭號" onclick="showModal(this, 3, 'evidenceRank')">
+            <div class="img-caption-mini">小號／老頭號</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">💰</span>
+          <div class="analysis-content">
+            <div class="analysis-original">不要自稱無課 某人幫妳課10幾萬 那不是錢？妳玩成這樣 這叫無課？</div>
+            <div class="analysis-reason">他在指控你「有人幫忙課金，所以不是無課」。</div>
+            <div class="analysis-note">備註：同上一個回答。我所說的「無課」，是指從去年8月底之後就沒有儲值過，遊戲內最新原器、月卡、通行證都沒有購買。請不要再扭曲事實誤導他人，這不是法律或賭局重點。</div>
+          </div>
+        </div>
+        <div class="analysis-block">
+          <span class="analysis-icon">🔑</span>
+          <div class="analysis-content">
+            <div class="analysis-original">網址內 驗證 我本人絕不會親自輸入 別想利用 別人幫我驗證 好讓我認罪</div>
+            <div class="analysis-reason">他聲稱「自己不會輸入驗證，不要設局陷害」。若真清白，不需要預設「有人會害我」，反而像在找退路，顯示內心不安。</div>
+            <div class="analysis-note">備註：這只是單純這個設計是為了防止用戶誤操作、避免有人誤送或亂送造成擾亂，屬於一種防呆機制。送出後我會在 Discord 上收到送出通知，如果網址被傳出去，可能會導致大量通知訊息洗版造成困擾，沒有其他特殊用途。</div>
+          </div>
+        </div>
+        <div class="evidence-card-row" id="evidenceCode">
+          <div class="evidence-card-mini" tabindex="0" aria-label="驗證碼賭局選項防呆設計截圖">
+            <div class="evidence-title-mini">驗證碼賭局選項防呆設計截圖</div>
+            <img src="https://i.ibb.co/5g90sNsY/2025-09-09-215348.png" alt="驗證碼賭局選項防呆設計截圖" onclick="showModal(this, 0, 'evidenceCode')">
+            <div class="img-caption-mini">表單驗證與賭局選項防呆機制</div>
+          </div>
+          <div class="evidence-card-mini" tabindex="0" aria-label="驗證碼與程式碼片段">
+            <div class="evidence-title-mini">驗證碼與程式碼片段</div>
+            <img src="https://i.ibb.co/xSJk7YDB/1.png" alt="驗證碼與程式碼片段" onclick="showModal(this, 1, 'evidenceCode')">
+            <div class="img-caption-mini">多組驗證碼與程式備註</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 整體分析區 -->
+    <div class="block overall-block">
+      <div class="overall-title"><span class="icon">📌</span> 整體分析</div>
+      <ul>
+        <li>焦點轉移：對方刻意把話題拉到「退坑、課金、帳號操作」等無關點，避免正面回應你提出的「賭局/攻擊行為」問題。</li>
+        <li>自相矛盾：一方面說「自己不會輸入驗證」，一方面卻擔心「有人幫我驗證」，顯示他知道這類紀錄可能成為證據。</li>
+        <li>情緒化攻擊：多數字眼是「嘲諷＋人身攻擊」，不是事實辯駁，這種語氣在蒐證上反而對你有利。</li>
+        <li>大多留言與核心糾紛無關（退坑、無課、帳號），已顯「霸凌性質」＋「持續糾纏」，保留證據即可。</li>
+        <li>你持續在留言板抹黑攻擊和案件本身無關的東西我不會回應，所有內容已備份。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 放大圖片遮罩（支援多組） -->
+  <div class="img-modal" id="imgModal" onclick="closeModal()">
+    <div class="img-modal-content" onclick="event.stopPropagation()">
+      <button class="img-modal-close" onclick="closeModal()" aria-label="關閉放大圖">&times;</button>
+      <img src="" alt="放大圖片" id="modalImg">
+      <div class="img-modal-arrows">
+        <button class="img-modal-arrow" id="arrowPrev" onclick="switchImg(-1)" aria-label="上一張">&larr;</button>
+        <button class="img-modal-arrow" id="arrowNext" onclick="switchImg(1)" aria-label="下一張">&rarr;</button>
+      </div>
+    </div>
+  </div>
+  <!-- 回到頂部按鈕 -->
+  <button id="backToTop" title="回到頂部" aria-label="回到頂部">↑</button>
+
+  <script>
+    // --- 證據組資料 ---
+    const evidenceRank = [
+      {src: "https://i.ibb.co/ymHZPmtn/1.png", alt: "原器停留"},
+      {src: "https://i.ibb.co/tpjzQYhw/2025-09-10-231521.png", alt: "烈空6+0"},
+      {src: "https://i.ibb.co/tMKbcKkX/2.png", alt: "小號／老頭號"},
+      {src: "https://i.ibb.co/YFNyG5JB/3.png", alt: "小號／老頭號"}
+    ];
+    const evidenceCode = [
+      {src: "https://i.ibb.co/5g90sNsY/2025-09-09-215348.png", alt: "驗證碼賭局選項防呆設計截圖"},
+      {src: "https://i.ibb.co/xSJk7YDB/1.png", alt: "驗證碼與程式碼片段"}
+    ];
+    // --- Modal 控制 ---
+    let currentGroup = [];
+    let currentIndex = 0;
+    function showModal(img, idx, groupName) {
+      if(groupName==="evidenceRank") currentGroup = evidenceRank;
+      else if(groupName==="evidenceCode") currentGroup = evidenceCode;
+      else currentGroup = [ {src: img.src, alt: img.alt} ];
+      currentIndex = idx;
+      updateModalImg();
+      document.getElementById('imgModal').classList.add('active');
+    }
+    function updateModalImg() {
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = currentGroup[currentIndex].src;
+      modalImg.alt = currentGroup[currentIndex].alt;
+      document.getElementById('arrowPrev').style.display = currentGroup.length>1 ? "" : "none";
+      document.getElementById('arrowNext').style.display = currentGroup.length>1 ? "" : "none";
+    }
+    function closeModal() {
+      document.getElementById('imgModal').classList.remove('active');
+      document.getElementById('modalImg').src = '';
+      currentGroup = [];
+    }
+    function switchImg(offset) {
+      if (!currentGroup.length) return;
+      currentIndex = (currentIndex + offset + currentGroup.length) % currentGroup.length;
+      updateModalImg();
+    }
+    // 鍵盤控制
+    window.addEventListener('keydown', function(e){
+      const modal = document.getElementById('imgModal');
+      if(!modal.classList.contains('active')) return;
+      if(e.key === "Escape") closeModal();
+      if(e.key === "ArrowLeft") switchImg(-1);
+      if(e.key === "ArrowRight") switchImg(1);
+    });
+
+    // 回到頂部
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 380) backToTop.style.display = 'flex';
+      else backToTop.style.display = 'none';
+    });
+    backToTop.onclick = () => window.scrollTo({top:0, behavior:"smooth"});
+  </script>
+</body>
+</html>
