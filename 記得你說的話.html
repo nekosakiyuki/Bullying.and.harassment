@@ -7,32 +7,48 @@
   <meta name="description" content="留言評論、賭局邏輯分析、證據比對與逐句解析">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,500,700&display=swap">
   <style>
-    :root {
-      --main-blue: #3173b1;
-      --light-blue: #e3f2fd;
-      --accent-blue: #4fc3f7;
-      --card-radius: 15px;
-      --shadow: 0 2px 16px #b8d1ff30;
-      --text-black: #22334d;
-      --gray-light: #fafdff;
-      --danger-red: #ef5350;
-      --info-green: #43a047;
-      --warn-yellow: #ffd54f;
-    }
-    html {
-      scroll-behavior: smooth;
-      background: #f5f7fa;
-    }
-    body {
-      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
-      color: var(--text-black);
-      font-size: 14px;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: #f5f7fa;
-      animation: pageFadeIn 0.7s;
-    }
+:root {
+  --main-blue: #23418b;      /* 深藍-主色 */
+  --accent-blue: #338edc;    /* 點綴亮藍 */
+  --light-blue: #e7f5ff;     /* 極淺藍 */
+  --highlight-blue: #c9e8fe; /* 亮藍標題 */
+  --bg-blue1: #3c6fd1;
+  --bg-blue2: #5daeff;
+  --bg-blue3: #b5d8ff;
+  --card-blue1: #2d4c84;
+  --card-blue2: #4783cc;
+  --card-blue3: #6dbafd;
+  --shadow: 0 6px 28px #223b5e44;
+  --card-radius: 18px;
+}
+html, body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #16223a 0%, #23418b 60%, #338edc 100%);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+  color: #e7f5ff;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  margin: 0; padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+body {
+  color: var(--light-blue);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  animation: pageFadeIn 0.7s;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
     @keyframes pageFadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -41,13 +57,15 @@
       max-width: 880px;
       margin: 32px auto 60px auto;
       padding: 0 14px;
+  flex: 1 0 auto;
     }
     /* Block/卡片區 */
     .block {
-      background: linear-gradient(102deg, #f2f7fd 80%, #eaf1fb 100%);
-      border-radius: var(--card-radius);
-      box-shadow: var(--shadow);
-      border: 1.5px solid #b7d5f5;
+  background: linear-gradient(120deg, var(--card-blue1) 0%, var(--card-blue2) 70%, var(--card-blue3) 100%);
+  color: var(--light-blue) !important;
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  border: 1.5px solid #4b8ad2;
       padding: 32px 32px 22px 32px;
       margin-bottom: 38px;
       position: relative;
@@ -57,223 +75,252 @@
       box-shadow: 0 6px 32px #61a0ec44;
     }
     .block-title {
-      font-size: 1.23em;
-      font-weight: bold;
-      color: var(--main-blue);
-      margin-bottom: 22px;
-      display: flex;
-      align-items: center;
-      letter-spacing: 1.2px;
-      gap: 8px;
-    }
+   color: var(--highlight-blue) !important;
+  text-shadow: 0 1px 8px #17345a55;
+  font-size: 1.23em;
+  font-weight: bold;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1.2px;
+}
     .icon {
-      font-size: 1.5em;
-      margin-right: 8px;
-      filter: drop-shadow(0 1px 1px #b8d1ff33);
-      transition: filter 0.18s, transform 0.18s;
-    }
+  color: var(--highlight-blue) !important;
+  font-size: 1.5em;
+  margin-right: 8px;
+  filter: drop-shadow(0 1px 1px #b8d1ff33);
+  transition: filter 0.18s, transform 0.18s;
+}
     .icon:hover { filter: brightness(1.3); transform: scale(1.14); }
 
     /* 條列區 */
     .block-list {
-      list-style: disc inside;
-      padding: 0;
-      margin: 0 0 0 12px;
-    }
+  list-style: none;
+  padding: 0; margin: 0;
+}
     .block-list li {
-      background: #fff;
-      border-radius: 11px;
-      margin-bottom: 14px;
-      padding: 14px 19px 13px 19px;
-      color: var(--text-black);
-      font-size: 1.08em;
-      box-shadow: 0 1px 5px #d6e9ff44;
-      border-left: 5px solid var(--accent-blue);
-      transition: background 0.14s;
+  background: linear-gradient(100deg, #223b68 60%, #338edc 100%);
+  border-radius: 9px;
+  margin-bottom: 13px;
+  padding: 10px 18px;
+  color: #e7f5ff !important;
+  font-weight: 500;
+  box-shadow: 0 1px 6px #338edc44;
+  border-left: 4px solid #51b7fd;
+  transition: background 0.15s, color 0.15s, box-shadow 0.14s;
       line-height: 1.85;
-      letter-spacing: 0.01em;
+  letter-spacing: 0.01em;
       animation: fadeInUp 0.45s;
     }
+.block-list li:hover {
+  background: linear-gradient(100deg,#4b82e7 70%,#63a7f8 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 18px #338edc18;
+}
     .block-list li strong {
-      color: var(--main-blue);
-      font-weight: bold;
+  color: var(--highlight-blue) !important;
+  font-weight: bold;
       letter-spacing: 0.5px;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(15px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
+@keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
+@keyframes popUp { from { transform: scale(0.85);} to { transform: scale(1);} }
+
     .block-list li:last-child {
       margin-bottom: 0;
     }
     /* 氣泡區 */
     .bubble-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin: 20px 0 10px 0;
-      max-width: 650px;
-    }
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 21px 0 10px 0;
+  max-width: 650px;
+}
     .bubble-label {
-      font-size: 1.01em;
-      color: #5aa3e2;
-      margin-bottom: 6px;
-      margin-left: 12px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
+  font-size: 1.03em;
+  color: var(--highlight-blue) !important;
+  margin-bottom: 7px;
+  margin-left: 12px;
+  font-weight: bold;
+  letter-spacing: 0.7px;
+}
     .bubble-msg {
-      background: linear-gradient(110deg, #eef7ff 80%, #d1eafc 100%);
-      color: #234060;
-      padding: 14px 18px;
-      border-radius: 17px 17px 17px 7px;
-      font-size: 1.06em;
-      box-shadow: 0 2px 8px #b8d1ff25;
-      max-width: 100%;
-      word-break: break-all;
-      line-height: 1.8;
-      letter-spacing: 0.03em;
-      border: 1.2px solid #b5d5f6;
-      margin-bottom: 10px;
-    }
+  background: linear-gradient(100deg, #223b68 60%, #338edc 100%);
+  color: #e7f5ff !important;
+  border-radius: 9px;
+  border-left: 4px solid #51b7fd;
+  padding: 10px 18px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 6px #338edc44;
+  font-size: 1.01em;
+  line-height: 1.7;
+  border: 1.2px solid #5ea4e6;
+  transition: box-shadow 0.13s, background 0.13s, color 0.13s;
+}
+.bubble-msg:hover {
+  background: linear-gradient(90deg, #2f5799 60%, #2688c4 100%);
+  color: #fff !important;
+  box-shadow: 0 3px 14px #338edc19;
+}
 
     /* 證據按鈕 */
-    .evidence-link {
-      display: inline-block;
-      padding: 8px 24px;
-      background: linear-gradient(90deg, var(--accent-blue) 70%, var(--main-blue) 100%);
-      color: #fff !important;
-      border-radius: 999px;
-      font-weight: bold;
-      font-size: 1.08em;
-      box-shadow: 0 2px 8px #b8d1ff33;
-      text-decoration: none;
-      letter-spacing: 0.6px;
-      border: none;
-      transition: background 0.17s, box-shadow 0.17s, transform 0.13s;
-      margin: 14px 0 7px 0;
-      cursor: pointer;
-      vertical-align: middle;
-    }
-    .evidence-link:hover,
-    .evidence-link:focus {
-      background: linear-gradient(90deg, #357ad7 60%, #285a91 100%);
-      box-shadow: 0 4px 16px #4fa3f744;
-      transform: translateY(-2px) scale(1.03);
-      text-decoration: underline;
-    }
-    .evidence-caption {
-      font-size: 0.94em;
-      color: #999;
-      margin-left: 8px;
-      vertical-align: middle;
-    }
+ .evidence-link {
+  display: inline-block;
+  padding: 10px 28px;
+  background: linear-gradient(90deg, #498dec 80%, #7ecaff 100%);
+  color: var(--light-blue) !important;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 1.12em;
+  box-shadow: 0 4px 18px #2563eb22;
+  text-decoration: none;
+  letter-spacing: 0.7px;
+  border: none;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.13s;
+  margin: 17px 0 10px 0;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.evidence-link:hover,
+.evidence-link:focus {
+  background: linear-gradient(90deg, #174b88 60%, #43a9f7 100%);
+  box-shadow: 0 7px 28px #338edc44;
+  color: #fff !important;
+}
+
+.evidence-caption,
+.img-caption-mini {
+  color: #b5dafb !important;
+  font-weight: 500;
+  opacity: 0.88;
+}
 
     /* 分析區塊 */
     .analysis-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 0;
-    }
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 0;
+}
     .analysis-block {
       display: flex;
       align-items: flex-start;
       padding: 13px 18px 13px 15px;
-      background: #f2f7ff;
-      border-left: 4px solid #448aff;
-      border-radius: 9px;
+  background: linear-gradient(120deg, var(--card-blue1) 0%, var(--card-blue2) 70%, var(--card-blue3) 100%);
+  box-shadow: 0 6px 28px #223b5e44;
+  color: var(--light-blue) !important;
+  border-left: 5px solid #7ecaff;
+  border-radius: var(--card-radius);
       margin-bottom: 0;
       gap: 13px;
-      box-shadow: 0 1px 7px #ddeeff22;
+  border: 1.5px solid #4b8ad2;
       position: relative;
-      transition: box-shadow 0.14s;
+  /* transition: border-left 0.15s, box-shadow 0.15s; */
     }
     .analysis-block + .analysis-block {
-      border-top: 1px solid #e4ecf8;
-      margin-top: 8px;
+  border-top: 1px solid #3a7abf55;
+  margin-top: 9px;
     }
+.analysis-block:hover {
+  background: linear-gradient(120deg, #274e86 0%, #2c68a9 100%); 
+  /* border-left: 5px solid #c9e8fe; */
+}
     .analysis-icon {
-      font-size: 1.23em;
-      margin-right: 8px;
+  font-size: 1.3em;
+  margin-right: 10px;
       margin-top: 2.5px;
-      color: #4285f4;
+  color: var(--highlight-blue) !important;
       flex-shrink: 0;
-      transition: filter 0.16s, transform 0.16s;
+  /* transition: filter 0.18s, transform 0.18s; */
     }
-    .analysis-content { flex: 1; }
-    .analysis-original {
-      color: #2857a5;
-      font-weight: 500;
+.analysis-block:hover .analysis-icon {
+  /* color: #fff !important; */
+  /* transform: scale(1.08); */
+}
+.analysis-content { flex: 1; color: var(--light-blue) !important; }
+.analysis-original {
+  color: var(--highlight-blue) !important;
+  font-weight: bold;
+  font-size: 1.07em;
       margin-bottom: 2px;
-      letter-spacing: 0.1px;
+  letter-spacing: 0.01em;
     }
-    .analysis-reason {
-      color: #232323;
-      background: #fafdff;
-      border-left: 2.5px solid #b3ddff;
-      border-radius: 0 7px 7px 0;
-      padding: 7px 13px 7px 13px;
-      margin-top: 3px;
-      font-size: 1em;
-      line-height: 1.7;
-    }
+.analysis-reason,
+.analysis-note {
+  background: linear-gradient(100deg, #223b68 60%, #338edc 100%);
+  color: #e7f5ff !important;
+  border-radius: 9px;
+  border-left: 4px solid #51b7fd;
+  padding: 10px 18px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 6px #338edc44;
+  font-size: 1.01em;
+  line-height: 1.75;
+}
     .analysis-note {
       margin-top: 7px;
-      background: #eaf4ff;
+  background: linear-gradient(90deg, #285a97 40%, #44b3ff 100%);
       border-left: 4px solid #4fc3f7;
       border-radius: 0 7px 7px 0;
       padding: 8px 12px 8px 14px;
       display: block;
-      color: #255081;
+  color: #c9e8fe !important;
       font-size: 0.98em;
       line-height: 1.7;
       margin-bottom: 0;
     }
-    .analysis-note ul {
+.analysis-note ul,
+.analysis-reason ul {
+  color: var(--light-blue) !important;
+  font-size: 1em;
       margin: 0 0 0 14px;
       padding: 0;
       list-style: disc inside;
     }
     /* 證據小卡圖片區 */
-    .evidence-card-row {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      margin: 35px 0 18px 0;
-      flex-wrap: wrap;
-    }
-    .evidence-card-mini {
-  background: var(--gray-light);
-  border-radius: 13px;
-  box-shadow: 0 3px 16px 0 #b8d1ff2a;
-  border: 1.5px solid #d5eaff;
-  padding: 12px 10px 14px 10px;
+.evidence-card-row {
+  display: flex;
+  gap: 22px;
+  justify-content: center;
+  margin: 35px 0 18px 0;
+  flex-wrap: wrap;
+}
+
+.evidence-card-mini {
+  background: linear-gradient(120deg, var(--card-blue1) 0%, var(--card-blue2) 70%, var(--card-blue3) 100%);
+  border-radius: 14px;
+  box-shadow: 0 6px 28px #223b5e44;
+  border: 1.5px solid #7ecaff;
+  padding: 14px 10px 14px 10px;
   width: 44vw;
   min-width: 140px;
   max-width: 240px;
   text-align: center;
   position: relative;
-  transition: box-shadow 0.18s, transform 0.14s;
+  transition: box-shadow 0.18s, transform 0.14s, border 0.18s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: var(--light-blue) !important;
 }
-    .evidence-card-mini:hover {
-      box-shadow: 0 8px 32px #7bb6ff44;
+
+.evidence-card-mini:hover {
+  border: 1.5px solid var(--highlight-blue);
+  box-shadow: 0 10px 36px #338edc22;
       transform: translateY(-3px) scale(1.025);
       z-index: 2;
     }
 .evidence-title-mini {
-  background: linear-gradient(90deg,#4fc3f7 70%,#e3f0ff 100%);
-  color: #166db2;
+  color: var(--highlight-blue) !important;
+  background: linear-gradient(90deg,#53bcff 60%,#1c5ea7 100%);
   font-weight: bold;
-  font-size: clamp(0.93em, 3vw, 1.13em);
+  font-size: 1.03em;
   letter-spacing: 0.5px;
-  border-radius: 6px 6px 0 0;
-  padding: 6px 2px 6px 2px;
-  margin-bottom: 8px;
+  border-radius: 7px;
+  padding: 3px 0;
+  margin-bottom: 6px;
   box-shadow: 0 1.5px 5px #d0eafd22;
   min-height: 2.3em;
   line-height: 1.25;
@@ -283,28 +330,29 @@
   align-items: center;
   justify-content: center;
 }
-    .evidence-card-mini img {
-      width: 140px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 7px;
-      border: 1px solid #b9d6fb;
-      box-shadow: 0 1.5px 7px #b3d2ff33;
-      transition: transform 0.17s, box-shadow 0.16s;
-      cursor: pointer;
-      background: #fff;
-    }
-    .evidence-card-mini img:hover {
-      transform: scale(1.10) rotate(-1.5deg);
-      box-shadow: 0 4px 22px #a5caf744;
-      z-index: 2;
-    }
-    .img-caption-mini {
-      color: #4171b1;
-      font-size: 0.98em;
-      margin-top: 7px;
-      margin-bottom: 0;
-    }
+.evidence-card-mini img {
+  width: 140px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #b9d6fb;
+  box-shadow: 0 2px 8px #b3d2ff33;
+  transition: transform 0.17s, box-shadow 0.16s;
+  cursor: pointer;
+  background: #3763af;
+}
+.evidence-card-mini img:hover {
+  transform: scale(1.10) rotate(-1.5deg);
+  box-shadow: 0 8px 32px #38bdf844;
+  z-index: 2;
+}
+.img-caption-mini {
+  color: #b5dafb !important;
+  font-size: 0.99em;
+  margin-top: 8px;
+  margin-bottom: 0;
+  opacity: 0.87;
+}
 
   @media (max-width: 700px) {
   .evidence-card-mini { width: 96vw; max-width: none; }
@@ -335,19 +383,19 @@
       align-items: center;
     }
     .img-modal-content img {
-      border-radius: 13px;
-      box-shadow: 0 10px 50px #222c4b99;
-      background: #fff;
-      max-width: 94vw;
-      max-height: 73vh;
-      display: block;
+  border-radius: 13px;
+  box-shadow: 0 10px 50px #222c4b99;
+  background: #3763af;
+  max-width: 94vw;
+  max-height: 73vh;
+  display: block;
     }
     .img-modal-close {
       position: absolute;
       top: -34px;
       right: -11px;
-      background: #fff;
-      color: #2257af;
+  background: #4783cc;
+  color: #c9e8fe;
       border: none;
       font-size: 2.3em;
       font-weight: bold;
@@ -362,8 +410,8 @@
       transition: background 0.2s, color 0.2s;
     }
     .img-modal-close:hover {
-      background: var(--accent-blue);
-      color: #fff;
+  background: #7ecaff;
+  color: #23418b;
     }
     .img-modal-arrows {
       display: flex;
@@ -372,8 +420,8 @@
       margin-top: 12px;
     }
     .img-modal-arrow {
-      background: #fff;
-      color: var(--main-blue);
+  background: #4783cc;
+  color: #e7f5ff;
       font-size: 2em;
       border: none;
       border-radius: 50%;
@@ -384,9 +432,21 @@
       transition: background 0.17s, color 0.17s;
     }
     .img-modal-arrow:hover {
-      background: var(--accent-blue);
-      color: #fff;
+  background: #7ecaff;
+  color: #23418b;
     }
+.block, .overall-block {
+  background: linear-gradient(120deg, #233b68 0%, #2c4e90 60%, #338edc 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 28px #223b5e44;
+  border: 1.5px solid #b3d9fa;
+  padding: 32px 32px 24px 32px;
+  margin-bottom: 45px;
+  position: relative;
+  transition: box-shadow 0.2s;
+  border-top: 4px solid #338edc;
+  color: #e7f5ff !important;
+}
     @keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
     @keyframes popUp { from { transform: scale(0.85);} to { transform: scale(1);} }
 
@@ -394,50 +454,80 @@
     /* 回到頂部按鈕 */
     #backToTop {
       position: fixed;
-      right: 24px;
-      bottom: 34px;
-      background: var(--main-blue);
-      color: #fff;
-      font-size: 1.5em;
+      right: 28px;
+      bottom: 30px;
+  background: linear-gradient(135deg, #4783cc 60%, #7ecaff 100%);
+  color: var(--light-blue) !important;
+      font-size: 2em;
       border: none;
       border-radius: 50%;
       width: 48px;
       height: 48px;
-      box-shadow: 0 2px 16px #3173b177;
+  box-shadow: 0 2px 18px #2e5e9a88;
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 99999;
+      z-index: 999;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s, transform 0.18s;
+  transition: background 0.15s, box-shadow 0.15s;
     }
     #backToTop:hover {
+  background: linear-gradient(135deg, #236cff 60%, #32cfff 100%);
+  color: #fff !important;
       background: var(--accent-blue);
       box-shadow: 0 5px 24px #4fc3f777;
       transform: scale(1.11);
     }
 
     /* 響應式設計 */
-    @media (max-width: 900px) {
-      .container { max-width: 99vw;}
-      .block, .overall-block { padding: 18px 3vw 16px 3vw; }
+.container { max-width: 900px; margin: 38px auto 60px auto; padding: 0 16px; }
+@media (max-width: 900px) {
+  .container { max-width: 99vw;}
+  .block, .overall-block { padding: 20px 4vw 18px 4vw; }
     }
     @media (max-width: 700px) {
       body { font-size: 17px; }
-      .block, .overall-block { font-size: 1.01em; }
-      .block-title { font-size: 1.08em;}
-      .block-list li { font-size: 0.99em; padding: 11px 2vw 11px 3vw;}
+      .block, .overall-block { font-size: 1.04em; }
+      .block-title { font-size: 1.18em;}
+      .block-list li { font-size: 1em; padding: 13px 4vw;}
       .bubble-wrap { max-width: 99vw; }
-      .bubble-msg { padding: 12px 4vw; font-size: 1em;}
-      .evidence-card-row { flex-direction: column; gap: 15px;}
+      .bubble-msg { padding: 13px 4vw; font-size: 1em;}
+      .evidence-card-row { flex-direction: column; gap: 16px;}
       .evidence-card-mini { width: 98vw; }
       .evidence-card-mini img { width: 90vw; height: 23vw; min-height: 60px;}
       .img-modal-content img { max-width: 97vw; }
       #backToTop { right: 10px; bottom: 18px;}
+  .analysis-tag { font-size: 1em; padding: 13px 5vw 12px 5vw;}
+  .advance-detail { padding: 13px 5vw 12px 5vw; }
+  .advance-toggle { font-size: 1.03em; padding: 8px 10vw;}
+  .legal-tip-box, .legal-clarify-box { padding: 14px 4vw 14px 4vw; font-size: 1em; max-width: 99vw; }
+  .legal-tip-title, .legal-clarify-title { font-size: 1.05em;}
     }
   </style>
 </head>
 <body>
+  <!-- 浮水印 -->
+<div style="
+    position: fixed;
+    right: 24px;
+    bottom: 20px;
+    font-size: 2em;
+  color: #c9e8fe55 !important;
+  text-shadow: 0 0 8px #22408044;
+    font-weight: bold;
+    user-select: none;
+    pointer-events: none;
+    z-index: 9999;
+  ">貓崎雪浮水印</div>
+
+
+<!-- 禁止右鍵 -->
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+document.getElementById('myVideo').addEventListener('keydown', e => e.preventDefault());
+</script>
+
   <div class="container">
     <!-- 聲明與立場 -->
     <div class="block">
@@ -577,7 +667,7 @@
         <div class="evidence-card-row" id="evidenceRank">
           <div class="evidence-card-mini" tabindex="0" aria-label="原器停留 證據圖">
             <div class="evidence-title-mini">原器停留</div>
-            <img src="https://i.ibb.co/ymHZPmtn/1.png" alt="原器停留" onclick="showModal(this, 0, 'evidenceRank')">
+            <img src="https://i.ibb.co/4w4JKbpb/1.png" alt="原器停留" onclick="showModal(this, 0, 'evidenceRank')">
             <div class="img-caption-mini">原器停留</div>
           </div>
           <div class="evidence-card-mini" tabindex="0" aria-label="烈空6+0 證據圖">
@@ -661,14 +751,15 @@
 
 <style>
 .legal-tip-box {
-  background: linear-gradient(100deg, #fffbe7 65%, #e2f0fb 100%);
-  border-left: 6px solid #f7c948;
-  border-radius: 13px;
-  box-shadow: 0 4px 18px #e3d7a318;
+  background: linear-gradient(100deg, #2d4c84 60%, #4783cc 100%);
+  border: 1.5px solid #4b8ad2;
+  border-left: 6px solid #7ecaff;
+  border-radius: 14px;
+  box-shadow: 0 6px 28px #223b5e44;
   padding: 20px 24px 18px 22px;
   margin: 28px auto 32px auto;
-  max-width: 650px;
-  color: #5a4700;
+  max-width: 720px;
+  color: var(--light-blue) !important;
   font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
   position: relative;
   transition: box-shadow .18s;
@@ -677,24 +768,28 @@
   box-shadow: 0 8px 30px #ffe19a44;
 }
 .legal-tip-title {
+  color: var(--highlight-blue) !important;
+  text-shadow: 0 1px 8px #17345a55;
   font-size: 1.13em;
   font-weight: bold;
-  color: #a88209;
-  margin-bottom: 12px;
-  letter-spacing: 1.2px;
+  margin-bottom: 22px;
   display: flex;
   align-items: center;
   gap: 8px;
+  letter-spacing: 1.2px;
 }
 .legal-tip-icon {
-  font-size: 1.47em;
-  margin-right: 6px;
-  filter: drop-shadow(0 1px 2px #fff2a633);
+  color: var(--highlight-blue) !important;
+  font-size: 1.5em;
+  margin-right: 8px;
+  filter: drop-shadow(0 1px 1px #b8d1ff33);
+  transition: filter 0.18s, transform 0.18s;
 }
 .legal-tip-content {
   font-size: 1.05em;
   line-height: 2.0;
   letter-spacing: 0.03em;
+  color: var(--light-blue) !important;
 }
 .legal-tip-content b, .legal-tip-content strong {
   color: #c0392b;
@@ -703,7 +798,8 @@
 @media (max-width: 600px) {
   .legal-tip-box {
     padding: 14px 4vw 14px 4vw;
-    font-size: 1em;
+  color: #fff !important;
+  font-weight: bold;
     max-width: 99vw;
   }
   .legal-tip-title {
@@ -782,14 +878,14 @@
 
 <style>
 .legal-clarify-box {
-  background: linear-gradient(102deg, #fafdff 70%, #e4ecfb 100%);
-  border-left: 6px solid #4fc3f7;
+  background: linear-gradient(100deg, #2d4c84 60%, #4783cc 100%);
+  border-left: 6px solid #7ecaff;
   border-radius: 14px;
-  box-shadow: 0 4px 18px #89b4ed18;
-  padding: 22px 28px 20px 25px;
-  margin: 32px auto 32px auto;
+  box-shadow: 0 6px 28px #223b5e44;
+  padding: 20px 24px 18px 22px;
+  margin: 28px auto 32px auto;
   max-width: 720px;
-  color: #204060;
+  color: var(--light-blue) !important;
   font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
   position: relative;
   transition: box-shadow .18s;
@@ -798,27 +894,31 @@
   box-shadow: 0 8px 32px #7bb6ff33;
 }
 .legal-clarify-title {
-  font-size: 1.19em;
+  color: var(--highlight-blue) !important;
+  text-shadow: 0 1px 8px #17345a55;
+  font-size: 1.13em;
   font-weight: bold;
-  color: #2157A5;
-  margin-bottom: 13px;
-  letter-spacing: 1.5px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
+  letter-spacing: 1.2px;
 }
 .legal-icon {
-  font-size: 1.55em;
-  margin-right: 7px;
-  filter: drop-shadow(0 1px 2px #b8d1ff33);
+  color: var(--highlight-blue) !important;
+  font-size: 1.5em;
+  margin-right: 8px;
+  filter: drop-shadow(0 1px 1px #b8d1ff33);
+  transition: filter 0.18s, transform 0.18s;
 }
 .legal-clarify-content {
-  font-size: 1.07em;
+  font-size: 1.05em;
   line-height: 2.0;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  color: var(--light-blue) !important;
 }
 .legal-clarify-content b {
-  color: #c0392b;
+  color: #fff !important;
   font-weight: bold;
 }
 @media (max-width: 600px) {
@@ -888,26 +988,26 @@
 }
 .analysis-tag {
   border-radius: 16px;
-  border-left: 7px solid var(--atag-border);
-  background: linear-gradient(98deg, #fff 70%, #eef7ff 100%);
+  border-left: 7px solid #7ecaff;
+  background: linear-gradient(110deg, #2f5799 70%, #479cff 100%);
   box-shadow: 0 4px 18px #b8d1ff18;
   padding: 17px 23px 16px 22px;
   font-size: 1.13em;
   font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
   line-height: 1.9;
-  color: #205070;
+   color: var(--light-blue) !important;
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: 10px;
   letter-spacing: 0.02em;
-  transition: background 0.18s, box-shadow 0.18s, border-left 0.18s;
+  /* transition: background 0.18s, box-shadow 0.18s, border-left 0.18s; */
   cursor: default;
 }
 .analysis-tag:hover {
-  background: linear-gradient(98deg,#eaf4ff 70%,#d1eafc 100%);
+  background: linear-gradient(110deg,#4276d0 70%,#72c4ff 100%);
   box-shadow: 0 8px 36px #7bb6ff42;
-  border-left: 7px solid #448aff;
+  border-left: 7px solid #b5dafb;
 }
 .atag-emoji {
   font-size: 1.58em;
@@ -939,8 +1039,8 @@
   gap: 9px;
   margin: 28px 0 5px 1px;
   padding: 10px 22px;
-  background: var(--advance-toggle-bg);
-  color: #2857a5;
+  background: linear-gradient(100deg, #244e90 60%, #64baff 100%);
+  color: var(--light-blue) !important;
   border: none;
   border-radius: 999px;
   font-size: 1.14em;
@@ -952,8 +1052,8 @@
   font-family: 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
 }
 .advance-toggle:hover, .advance-toggle:focus {
-  background: var(--advance-toggle-hover);
-  color: #23507b;
+  background: linear-gradient(100deg,#2e59a0 70%,#3dc6ff 100%);
+  color: #fff !important;
 }
 .adv-arrow {
   font-size: 1.1em;
@@ -964,26 +1064,27 @@
   transform: rotate(180deg);
 }
 .advance-detail {
-  background: var(--advance-bg);
+  background: linear-gradient(100deg, #244e90 60%, #64baff 100%);
   border-radius: 13px;
-  margin: 0 0 0 0;
-  box-shadow: var(--advance-shadow);
+  margin: 0;
+  box-shadow: 0 2px 14px #2e5e9a33;
   padding: 18px 20px 16px 22px;
   display: none;
   animation: fadeIn 0.45s;
-  border-left: 5px solid #4fc3f7;
+  border-left: 5px solid #7ecaff;
+  color: var(--light-blue) !important;
 }
 .advance-detail.active { display: block; }
 .adv-section + .adv-section { margin-top: 17px;}
 .adv-header {
   font-weight: bold;
-  color: var(--advance-head);
+  color: var(--highlight-blue) !important;
   font-size: 1.08em;
   margin-bottom: 6px;
   letter-spacing: 0.5px;
 }
 .adv-body {
-  color: #234060;
+  color: var(--light-blue) !important;
   font-size: 1.01em;
   line-height: 1.9;
   letter-spacing: 0.01em;
@@ -1086,5 +1187,272 @@ window.addEventListener('scroll', function() {
 });
 backToTop.onclick = () => window.scrollTo({top:0, behavior:"smooth"});
   </script>
+
+<script>
+    // 讓使用者按 ESC 也能關閉面板
+    document.addEventListener('keydown', function(e){
+      if(e.key === "Escape") {
+        document.querySelector('.privacy-panel').classList.remove('active');
+      }
+    });
+    // 點擊 panel 以外區域自動關閉（可選）
+    document.addEventListener('click', function(e){
+      var panel = document.querySelector('.privacy-panel');
+      if (panel.classList.contains('active')) {
+        if (!panel.contains(e.target) && !e.target.classList.contains('privacy-toggle-btn')) {
+          panel.classList.remove('active');
+        }
+      }
+    });
+  </script>
+
+<script>
+  // 隱私權政策摺疊功能
+  function togglePrivacyPanel() {
+    const panel = document.getElementById('privacyPanel');
+    const isOpen = panel.classList.toggle('active');
+    panel.setAttribute('aria-hidden', !isOpen);
+    if(isOpen){
+      panel.focus();
+      setTimeout(()=>{ panel.scrollIntoView({behavior:'smooth', block:'end'}); }, 100);
+    }
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key === "Escape"){
+      document.getElementById('privacyPanel').classList.remove('active');
+    }
+  });
+</script>
+
+<style>
+/* 隱私權政策專用CSS，可直接貼在你原本的style後面 */
+footer {
+  background: #233b68;
+  color: #e7f5ff;
+  padding: 24px 0 16px 0;
+  text-align: center;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  position: relative;
+  left: 0;
+  right: 0;
+  border-top: 2px solid #338edc;
+  box-shadow: 0 -2px 18px #223b5e55;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+.privacy-toggle-btn {
+  background: linear-gradient(90deg, #338edc 70%, #23418b 100%);
+  color: #fff;
+  border: none;
+  outline: none;
+  font-size: 1.15em;
+  padding: 13px 36px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px #23418b44;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.13s;
+  font-weight: bold;
+  margin-bottom: 14px;
+  letter-spacing: 0.1em;
+}
+footer .footer-container > div {
+  opacity: 0.90;
+  color: #b5dafb;
+  font-size: 1em;
+  margin-top: 8px;
+}
+.privacy-toggle-btn:active {
+  background: #23418b;
+}
+.privacy-panel {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #22305a; /* 深藍色 */
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 18px 18px 10px 18px;
+  text-align: left;
+  font-size: 1em;
+  line-height: 1.82;
+  position: relative;
+  margin-bottom: 10px;
+  display: none;
+  animation: fadeIn 0.3s;
+  z-index: 2;
+}
+.privacy-panel.active {
+  display: block;
+  animation: fadeIn 0.25s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px);}
+  to   { opacity: 1; transform: translateY(0);}
+}
+  .privacy-panel h2 {
+    font-size: 1.25em;
+    margin-top: 1.6em;
+    margin-bottom: 0.5em;
+    color: #8abfff; /* 輕微亮藍，可加強辨識 */
+    font-weight: bold;
+  }
+  .privacy-panel ul { margin: 0 0 1em 1.2em; }
+  .privacy-panel li { margin-bottom: 0.5em; }
+  .privacy-close-btn {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+    font-size: 1.4em;
+    background: transparent;
+    border: none;
+    color: #b0c7ff;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .privacy-close-btn:hover {
+    background: #294380;
+    color: #fff;
+  }
+  /* 捲軸優化（深色風格） */
+  .privacy-panel {
+    scrollbar-color: #3b4a77 #22305a;
+    scrollbar-width: thin;
+  }
+  .privacy-panel::-webkit-scrollbar {
+    width: 8px;
+    background: #22305a;
+  }
+  .privacy-panel::-webkit-scrollbar-thumb {
+    background: #3b4a77;
+    border-radius: 6px;
+  }
+  @media (max-width: 600px) {
+    .privacy-panel {
+      max-width: 98vw;
+      padding: 12px 6vw 8px 6vw;
+      font-size: 0.98em;
+    }
+    .privacy-toggle-btn {
+      width: 90vw;
+      max-width: 400px;
+      font-size: 1em;
+    }
+}
+    // 防右鍵、拖曳下載
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+    video.addEventListener('keydown', e => e.preventDefault());
+
+    // 禁止複製事件（全站）
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      alert('禁止複製本頁內容！');
+    });
+
+</style>
+<!-- ====== 隱私權政策 Footer 區塊放這裡 ====== -->
+<footer>
+  <div class="footer-container">
+    <button class="privacy-toggle-btn" onclick="document.querySelector('.privacy-panel').classList.add('active')">
+      隱私權政策
+    </button>
+  <div id="privacyPanel" class="privacy-panel" tabindex="-1" aria-hidden="true">
+    <button class="privacy-close-btn" onclick="togglePrivacyPanel()" aria-label="關閉">&times;</button>
+    <h2>賭局 隱私權政策</h2>
+    <p>歡迎您使用「賭局」（以下簡稱本網站）。為保障您的隱私權與個人資料安全，請詳閱本政策內容，當您使用本網站時，即表示您同意本政策。</p>
+    <hr>
+   <h2>一、資料蒐集範圍</h2>
+<p>
+本網站會依實際服務需求，蒐集下列個人資料，並分別說明如下：
+</p>
+<ol>
+  <li>
+    <b>聯絡資訊</b>
+    <ul>
+      <li>蒐集情境：當用戶透過聯絡表單、電子郵件或其他管道，主動與我們聯絡或提交案件時。</li>
+      <li>使用目的：用於案件聯繫、身份確認、通知案件進度。</li>
+      <li>保存原則：僅於案件處理及爭議/訴訟需要期間保存，相關程序終止後即刪除。</li>
+    </ul>
+  </li>
+  <li>
+    <b>身分證明文件</b>
+    <ul>
+      <li>蒐集情境：當案件或第三方權益人需要進行身份驗證時，管理員得請求您提供身分證明文件。</li>
+      <li>使用目的：僅用於核對身份、避免冒名申請、維護案件公正性。</li>
+      <li>保存原則：訴訟結束後即予銷毀，不會另作他用。</li>
+    </ul>
+  </li>
+  <li>
+    <b>證據資料（截圖、影片、對話紀錄等）</b>
+    <ul>
+      <li>蒐集情境：當用戶主動上傳案件相關證據時。</li>
+      <li>蒐集項目：截圖、影片、文字紀錄、文件等。</li>
+      <li>使用目的：僅用於案件審核、糾紛處理、依法配合司法或訴訟程序。</li>
+      <li>保存原則：於案件、爭議或訴訟終止後即予刪除，除法律另有規定。</li>
+    </ul>
+  </li>
+  <li>
+    <b>第三方資訊</b>
+    <ul>
+      <li>蒐集情境：用戶所上傳的證據資料中，可能包含第三方之個人資料（如姓名、肖像、聯絡方式、對話內容等）。</li>
+      <li>蒐集項目：第三方姓名、肖像、聯絡方式、對話或其他可識別資訊。</li>
+      <li>使用目的：僅限於案件審核、糾紛處理、配合司法或訴訟程序之需要，不會用於其他目的或商業用途。</li>
+      <li>保存原則：與案件相關資料一併保存，於案件、爭議或訴訟終止後即予刪除，除法律另有規定。</li>
+      <li>第三方權益：若第三方認為其權益受損，可依本網站申訴流程提出刪除或遮蔽申請，網站將依法審查處理。</li>
+    </ul>
+  </li>
+  <li><strong>本網站不會主動蒐集您的IP位址、瀏覽器資訊、使用時間等技術性資料，亦不會使用Cookies或其他追蹤技術</strong>。所有蒐集之資料，僅限於本網站服務、案件處理及法定必要用途，絕不會用於任何商業或行銷用途。  </li>
+    </ul>
+    <hr>
+    <h2>二、資料使用方式</h2>
+    <ul>
+      <li>以上資料將僅用於<b>案件聲明、糾紛佐證、用戶間爭議處理</b>等本網站訴訟範圍內之用途。</li>
+      <li>本網站<b>不會將您的個人資料用於其他用途</b>，也不會出售、交換、出租，除非經您同意或法律要求。</li>
+      <li>若您主動公開留言、上傳截圖或影片，該內容可能會被其他用戶所見，請自行斟酌是否公開。</li>
+    </ul>
+    <hr>
+    <h2>三、資料安全與保護</h2>
+    <ul>
+      <li>本網站採取合理資訊安全措施，保障資料安全。</li>
+      <li>僅有授權人員可依業務需要查閱您的資料，未經授權人員不得擅自存取。</li>
+<li><b>非公開個人資料</b>，係指用戶向本網站管理員所提供，但<strong>未在本網站公開展示</strong>，僅限管理員或特定人員查閱之個人相關資訊。<br></li>
+  <li>例如：用戶透過聯絡表單或電子郵件提交的截圖、證據檔案、聯絡方式等，若尚未公開於本網站，均屬於非公開個人資料。<br></li>
+  <li><b>一旦資料被公開展示於本網站（如留言區、證據區、公開截圖等），即不再屬於非公開個人資料。</b></li>
+    </ul>
+    <hr>
+<h2>四、用戶權利</h2>
+<ul>
+  <li>您可依個人資料保護法，向我們請求查詢、閱覽、複製、補充、更正、停止蒐集、處理、利用或刪除您的個人資料。</li>
+  <li>若您有上述需求，請透過本網站聯絡我們，並請提供可識別身分之相關資訊。</li>
+  <li>用戶上傳但尚未公開於本網站的截圖、影片或相關檔案，經本人申請且審核同意後，得請求刪除。</li>
+  <li><b>已公開展示於本網站的證據資料（如截圖、影片等），原則上不受理刪除或更正申請，除非法律另有強制規定或經雙方協議。</b></li>
+  <li>您如欲撤回同意本網站處理您的個人資料，請與我們聯絡。撤回同意後，網站將停止處理您的個人資料，但已公開之內容原則上不作刪除或修正，除非法律另有強制規定。</li>
+  <li>您的個人資料將依本網站營運及訴訟需求保存，除法律另有規定外，於相關訴訟終止後即予刪除。</li>
+</ul>
+    <hr>
+<h2>五、政策修改</h2>
+<ul>
+  <li>本政策如有修正，將公布於本網站，恕不另行個別通知。</li>
+  <li>本網站有權隨時依實際需要及法令規定調整本政策內容，建議您隨時留意本頁公告內容。</li>
+  <li>重大變更事項（如資料蒐集範圍、使用目的調整等），本網站將於首頁或會員頁面顯著公告。</li>
+  <li>新修訂政策自公告日起生效，除非另有說明。</li>
+  <li>如您不同意修正內容，請立即停止使用本網站。惟因案件處理或法律規定，您所提供之資料將依法保存，無法任意刪除。</li>
+</ul>    <hr>
+    <p><b>貓崎雪 敬上</b></p>
+  </div>
+    <div style="margin-top:14px;font-size:0.97em;opacity:0.85;">
+      &copy; 2025 Your Website Name
+    </div>
+
+<!-- ====== 隱私權政策 Footer 區塊結束 ====== -->
 </body>
+</footer>
 </html>
