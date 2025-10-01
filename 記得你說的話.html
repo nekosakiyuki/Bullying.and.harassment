@@ -503,6 +503,112 @@ body {
   .legal-tip-box, .legal-clarify-box { padding: 14px 4vw 14px 4vw; font-size: 1em; max-width: 99vw; }
   .legal-tip-title, .legal-clarify-title { font-size: 1.05em;}
     }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(36,41,46,0.82);
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal.open {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-arrow {
+      background: #fff;
+      border: none;
+      width: 44px;
+      height: 44px;
+      margin: 0 12px;
+      border-radius: 50%;
+      box-shadow: 0 1px 8px #0002;
+      cursor: pointer;
+      font-size: 2rem;
+      color: #2563eb;
+      opacity: 0.86;
+      transition: background 0.15s, opacity 0.15s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+    }
+    .modal-arrow:disabled {
+      opacity: 0.28;
+      cursor: default;
+    }
+    .modal-arrow:hover:not(:disabled) {
+      background: #e0e7ff;
+      opacity: 1;
+    }
+    .modal-content {
+      position: relative;
+      background: #fff;
+      border-radius: 10px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 4px 32px #0007;
+      animation: fadeIn 0.13s;
+      max-width: 92vw;
+      max-height: 82vh;
+    }
+    .modal-img {
+      max-width: 75vw;
+      max-height: 68vh;
+      display: block;
+      border-radius: 8px;
+      background: #e5e7eb;
+      box-shadow: 0 2px 10px #0001;
+    }
+    .modal-close {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: #fff;
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      box-shadow: 0 1px 6px #0001;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #333;
+      opacity: 0.7;
+      transition: background 0.15s, opacity 0.15s;
+      z-index: 11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-close:hover {
+      background: #f3f4f6;
+      opacity: 1;
+    }
+    @media (max-width: 600px) {
+      .album-thumb { width: 60vw; height: 60vw; min-width: 92px; min-height: 92px;}
+      .modal-content { max-width: 98vw; padding: 2px;}
+      .modal-img { max-width: 89vw; max-height: 54vh;}
+      .modal-arrow { width: 36px; height: 36px; font-size: 1.3rem; margin: 0 3px; }
+      .modal-close { width: 28px; height: 28px; font-size: 1.13rem;}
+    }
+.modal-page {
+  margin-top: 14px;
+  font-size: 1.11em;
+  color: #325d9a;
+  font-weight: bold;
+  background: rgba(255,255,255,0.25);
+  border-radius: 6px;
+  padding: 5px 16px 4px 16px;
+  letter-spacing: 1px;
+  display: inline-block;
+}
     #consentModal, #secondModal, #blockModal, #privacyModal {
       position: fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.62);
       display:none; align-items:center; justify-content:center; z-index:10000;
@@ -1139,24 +1245,20 @@ document.addEventListener('dragstart', e => e.preventDefault());
     };
 
     // 第二次同意
-    document.getElementById('secondYes').onclick = async function() {
-      secondModal.style.display = 'none';
-      try {
-        const res = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
-        const data = await res.json();
-        if (data.country === 'TW') {
-          mainContent.style.display = 'block';
-        } else {
-          blockModal.style.display = 'flex';
-        }
-      } catch (e) {
-        blockModal.style.display = 'flex';
-      }
-    };
-    document.getElementById('secondNo').onclick = function() {
-      secondModal.style.display = 'none';
+document.getElementById('secondYes').onclick = async function() {
+  secondModal.style.display = 'none';
+  try {
+    const res = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
+    const data = await res.json();
+    if (data.country === 'TW') {
+      window.location.href = "https://nekosaki_yuki.bobaboba.me/";
+    } else {
       blockModal.style.display = 'flex';
-    };
+    }
+  } catch (e) {
+    blockModal.style.display = 'flex';
+  }
+};
 
     // 隱私權政策顯示/關閉
     document.getElementById('showPrivacy').onclick = function() {
